@@ -1,0 +1,16 @@
+
+*
+
+!*/
+
+!*.py
+!**/*.py
+
+!.gitignore
+
+__pycache__/
+*.py[cod]
+*.cover
+.pytest_cache/
+.tracecov/
+.venv/
