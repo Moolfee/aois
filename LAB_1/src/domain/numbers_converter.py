@@ -1,7 +1,7 @@
-"""Переводы между десятичным и двоичным кодом"""
+"""Переводы между десятичным и двоичным кодом."""
 
-from config import BIT_WIDTH
-from bit_operations import add_one, invert_bits
+from domain.bit_operations import add_one, invert_bits
+from domain.config import BIT_WIDTH
 
 
 class NumbersConverter:

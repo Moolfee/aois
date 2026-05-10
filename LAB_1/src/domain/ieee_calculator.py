@@ -1,6 +1,6 @@
 """Операции над числами IEEE-754 binary32."""
 
-from ieee_numbers import IEEENumber
+from domain.ieee_numbers import IEEENumber
 
 
 class IEEECalculator:

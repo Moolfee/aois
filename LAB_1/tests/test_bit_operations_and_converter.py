@@ -1,6 +1,6 @@
 import pytest
 
-from bit_operations import (
+from domain.bit_operations import (
     add_bits,
     add_one,
     compare_bits,
@@ -8,8 +8,8 @@ from bit_operations import (
     shift_left,
     subtract_bits,
 )
-from exceptions import InvalidBitOperationError
-from numbers_converter import NumbersConverter
+from domain.exceptions import InvalidBitOperationError
+from domain.numbers_converter import NumbersConverter
 
 
 def test_bit_operations_cover_main_branches():

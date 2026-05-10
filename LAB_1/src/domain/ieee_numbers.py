@@ -1,13 +1,13 @@
-"""Представление числа IEEE-754"""
+"""Представление числа IEEE-754."""
 
-from config import IEEE_EXP_BITS, IEEE_MANTISSA_BITS, IEEE_TOTAL_BITS
-from exceptions import (
+from domain.config import IEEE_EXP_BITS, IEEE_MANTISSA_BITS, IEEE_TOTAL_BITS
+from domain.exceptions import (
     IEEEOverflowError,
     InvalidIEEEBitsError,
     InvalidIEEEInputError,
     UnsupportedIEEEValueError,
 )
-from numbers_converter import NumbersConverter
+from domain.numbers_converter import NumbersConverter
 
 
 class IEEENumber:

@@ -1,13 +1,13 @@
 import pytest
 
-from exceptions import (
+from domain.exceptions import (
     IEEEOverflowError,
     InvalidIEEEBitsError,
     InvalidIEEEInputError,
     UnsupportedIEEEValueError,
 )
-from ieee_calculator import IEEECalculator
-from ieee_numbers import IEEENumber
+from domain.ieee_calculator import IEEECalculator
+from domain.ieee_numbers import IEEENumber
 
 
 def test_ieee_number_validates_bits():

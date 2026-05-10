@@ -1,19 +1,15 @@
-"""CLI интерфейс"""
+"""CLI интерфейс."""
 
-from bcd_excess3_calculator import BCDCalculator
-from calculator import Calculator
-from config import BIT_WIDTH, DIVISION_FRAC_BITS
-from exceptions import InvalidMenuChoiceError, Lab1Error
-from ieee_calculator import IEEECalculator
-from ieee_numbers import IEEENumber
-from numbers_converter import NumbersConverter
+from application.lab1_service import Lab1Service
+from domain.exceptions import InvalidMenuChoiceError, Lab1Error
+from domain.numbers_converter import NumbersConverter
 
 
-class Menu:
-    """Главное меню для вызовафункций"""
+class Cli:
+    """Главное меню LAB_1."""
 
-    def __init__(self):
-        self.ieee_calculator = IEEECalculator()
+    def __init__(self, service: Lab1Service | None = None):
+        self.service = service or Lab1Service()
 
     def run(self):
         while True:
@@ -97,53 +93,50 @@ class Menu:
 
     def _show_codes(self):
         """Показать прямой, обратный и дополнительный код числа"""
-        number = self._input_int("Введите число (10-ый формат): ")
-        direct = NumbersConverter.to_direct(number, BIT_WIDTH)
-        ones = NumbersConverter.to_ones(number, BIT_WIDTH)
-        twos = NumbersConverter.to_twos(number, BIT_WIDTH)
+        codes = self.service.get_codes(self._input_int("Введите число (10-ый формат): "))
 
         print("\nКОДЫ")
-        print("Число:", number)
-        print("Прямой:        ", NumbersConverter.bits_to_str(direct))
-        print("Обратный:      ", NumbersConverter.bits_to_str(ones))
-        print("Дополнительный:", NumbersConverter.bits_to_str(twos))
+        print("Число:", codes["number"])
+        print("Прямой:        ", NumbersConverter.bits_to_str(codes["direct"]))
+        print("Обратный:      ", NumbersConverter.bits_to_str(codes["ones"]))
+        print("Дополнительный:", NumbersConverter.bits_to_str(codes["twos"]))
 
     def _add_in_twos(self):
         """Выполнить сложение двух целых в дополнительном коде"""
         left = self._input_int("Введите A: ")
         right = self._input_int("Введите B: ")
-        result = Calculator.add_in_twos(left, right, BIT_WIDTH)
+        result = self.service.add_in_twos(left, right)
         self._print_integer_result("СЛОЖЕНИЕ В ДОП. КОДЕ", result)
 
     def _subtract_in_twos(self):
         """Выполнить вычитание через A + (-B)"""
         left = self._input_int("Введите A: ")
         right = self._input_int("Введите B: ")
-        result = Calculator.sub_in_twos(left, right, BIT_WIDTH)
+        result = self.service.subtract_in_twos(left, right)
         self._print_integer_result("ВЫЧИТАНИЕ В ДОП. КОДЕ", result)
 
     def _multiply_in_direct(self):
         """Выполнить умножение в прямом коде"""
         left = self._input_int("Введите A: ")
         right = self._input_int("Введите B: ")
-        result = Calculator.multiply_in_direct(left, right, BIT_WIDTH)
+        result = self.service.multiply_in_direct(left, right)
         self._print_integer_result("УМНОЖЕНИЕ В ПРЯМОМ КОДЕ", result)
 
     def _divide_in_direct(self):
         """Выполнить деление в прямом коде"""
         left = self._input_int("Введите A: ")
         right = self._input_int("Введите B: ")
-        result = Calculator.divide_in_direct(left, right, BIT_WIDTH, DIVISION_FRAC_BITS)
+        result = self.service.divide_in_direct(left, right)
         self._print_integer_result("ДЕЛЕНИЕ В ПРЯМОМ КОДЕ", result)
 
     def _ieee_operation(self, title, operation):
         """Общий шаблон для четырёх IEEE-операций"""
         left_raw = self._input_ieee("Введите первое число: ")
         right_raw = self._input_ieee("Введите второе число: ")
-
-        left = IEEENumber.from_string(left_raw)
-        right = IEEENumber.from_string(right_raw)
-        result = operation(left, right)
+        payload = operation(left_raw, right_raw)
+        left = payload["left"]
+        right = payload["right"]
+        result = payload["result"]
 
         print(f"\n{title}")
         print(f"Первое число: {left.to_decimal_string()}")
@@ -155,19 +148,19 @@ class Menu:
 
     def _ieee_add(self):
         """IEEE-754 сложение"""
-        self._ieee_operation("IEEE-754 СЛОЖЕНИЕ", self.ieee_calculator.add)
+        self._ieee_operation("IEEE-754 СЛОЖЕНИЕ", self.service.add_ieee)
 
     def _ieee_subtract(self):
         """IEEE-754 вычитание"""
-        self._ieee_operation("IEEE-754 ВЫЧИТАНИЕ", self.ieee_calculator.subtract)
+        self._ieee_operation("IEEE-754 ВЫЧИТАНИЕ", self.service.subtract_ieee)
 
     def _ieee_multiply(self):
         """IEEE-754 умножение"""
-        self._ieee_operation("IEEE-754 УМНОЖЕНИЕ", self.ieee_calculator.multiply)
+        self._ieee_operation("IEEE-754 УМНОЖЕНИЕ", self.service.multiply_ieee)
 
     def _ieee_divide(self):
         """IEEE-754 деление"""
-        self._ieee_operation("IEEE-754 ДЕЛЕНИЕ", self.ieee_calculator.divide)
+        self._ieee_operation("IEEE-754 ДЕЛЕНИЕ", self.service.divide_ieee)
 
     @staticmethod
     def _format_excess3(dec_value, bits):
@@ -185,8 +178,7 @@ class Menu:
         left = self._input_bcd_number("Введите A: ")
         right = self._input_bcd_number("Введите B: ")
 
-        calculator = BCDCalculator()
-        result = calculator.add(left, right)
+        result = self.service.add_bcd(left, right)
 
         print("\nBCD-СЛОЖЕНИЕ (EXCESS-3)")
         print(f"Первое число: {result['a_dec']}")
@@ -195,3 +187,6 @@ class Menu:
         print(f"BCD-код:      {self._format_excess3(result['b_dec'], result['b_bits'])}")
         print(f"Результат:    {result['res_dec']}")
         print(f"BCD-код:      {self._format_excess3(result['res_dec'], result['res_bits'])}")
+
+
+Menu = Cli

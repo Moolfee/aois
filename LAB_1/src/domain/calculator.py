@@ -1,8 +1,8 @@
-"""Арифметика целых чисел"""
+"""Арифметика целых чисел."""
 
-from config import BIT_WIDTH, DIVISION_FRAC_BITS
-from bit_operations import add_bits, compare_bits, shift_left, subtract_bits
-from numbers_converter import NumbersConverter
+from domain.bit_operations import add_bits, compare_bits, shift_left, subtract_bits
+from domain.config import BIT_WIDTH, DIVISION_FRAC_BITS
+from domain.numbers_converter import NumbersConverter
 
 
 class Calculator:

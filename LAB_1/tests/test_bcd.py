@@ -1,7 +1,7 @@
 import pytest
 
-from bcd_excess3_calculator import BCDCalculator
-from exceptions import InvalidBCDDigitError
+from domain.bcd_excess3_calculator import BCDCalculator
+from domain.exceptions import InvalidBCDDigitError
 
 
 def test_bcd_encode_and_decode_helpers():

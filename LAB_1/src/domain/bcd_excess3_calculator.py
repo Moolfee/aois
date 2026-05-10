@@ -1,8 +1,8 @@
-"""Сложение десятичных чисел в коде Excess-3"""
+"""Сложение десятичных чисел в коде Excess-3."""
 
-from exceptions import InvalidBCDDigitError
-from bit_operations import add_bits
-from numbers_converter import NumbersConverter
+from domain.bit_operations import add_bits
+from domain.exceptions import InvalidBCDDigitError
+from domain.numbers_converter import NumbersConverter
 
 
 class BCDCalculator:

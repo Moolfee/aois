@@ -1,6 +1,6 @@
-"""Побитовые операции"""
+"""Побитовые операции."""
 
-from exceptions import InvalidBitOperationError
+from domain.exceptions import InvalidBitOperationError
 
 
 def invert_bits(bits):

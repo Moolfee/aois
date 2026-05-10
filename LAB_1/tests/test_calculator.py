@@ -1,6 +1,6 @@
 import pytest
 
-from calculator import Calculator
+from domain.calculator import Calculator
 
 
 def test_add_and_sub_in_twos():
