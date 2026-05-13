@@ -116,3 +116,54 @@ def test_hash_table_resizes_after_high_load() -> None:
     assert table.read("a") == 1
     assert table.read("b") == 2
     assert table.read("c") == 3
+
+
+def test_avl_bucket_handles_left_branches_and_right_rotation() -> None:
+    """Проверяет вставку влево, правое вращение и поиск слева."""
+    table = HashTable(capacity=11, hash_function=_SingleBucketHashFunction())
+
+    for key in ["g", "f", "e", "d", "c", "b", "a"]:
+        table.create(key, key.upper())
+
+    bucket = table._buckets[0]
+
+    assert [entry.key for entry in bucket.entries()] == ["a", "b", "c", "d", "e", "f", "g"]
+    assert table.read("a") == "A"
+    assert bucket._root is not None
+    assert _is_balanced(bucket._root)
+
+
+def test_avl_bucket_deletes_node_with_two_children() -> None:
+    """Проверяет ветку удаления узла с преемником справа."""
+    table = HashTable(capacity=11, hash_function=_SingleBucketHashFunction())
+
+    for key in ["d", "b", "f", "a", "c", "e", "g"]:
+        table.create(key, key.upper())
+
+    deleted = table.delete("d")
+    bucket = table._buckets[0]
+
+    assert deleted.key == "d"
+    assert [entry.key for entry in bucket.entries()] == ["a", "b", "c", "e", "f", "g"]
+    assert bucket._root is not None
+    assert bucket._root.entry.key == "e"
+    assert _is_balanced(bucket._root)
+
+
+def test_hash_table_contains_update_and_delete_missing_paths() -> None:
+    """Проверяет отсутствующие ключи и обновление в ветвях дерева."""
+    table = HashTable(capacity=11, hash_function=_SingleBucketHashFunction())
+
+    for key in ["m", "c", "t"]:
+        table.create(key, key)
+
+    assert table.contains("c") is True
+    assert table.contains("a") is False
+    assert table.update("c", "changed").value == "changed"
+    assert table.read("c") == "changed"
+
+    with pytest.raises(KeyNotFoundError):
+        table.update("z", "missing")
+
+    with pytest.raises(KeyNotFoundError):
+        table.delete("z")
